@@ -1,0 +1,9 @@
+[Core]
+Name = Nagios
+Module = nagiosbot
+    
+[Documentation]
+Description = Interface to Nagios
+
+[Python]
+Version = 2
