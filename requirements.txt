@@ -1,1 +1,1 @@
-nagcgi
+git+https://github.com/bmhatfield/NagiosCGI.git
