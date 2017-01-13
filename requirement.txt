@@ -1,1 +1,1 @@
-git+git://github.com/aliegha/err-nagios@master
+git+https://github.com/bmhatfield/NagiosCGI.git
