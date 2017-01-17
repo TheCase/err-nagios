@@ -29,20 +29,32 @@
 
 import errbot
 import nagcgi
+from errbot import BotPlugin, botcmd
 #import rt
 
-class NagiosBot(errbot.BotPlugin):
-	min_err_version = "2.0.0"
-	max_err_version = "2.0.0"
+class Nagios(BotPlugin):
 
-	nagios = None
+	def activate(self):
+
+		if not self.config:
+			# Don't allow activation until we are configured
+			message = 'Nagios is not configured, please do so.'
+			self.log.info(message)
+			self.warn_admins(message)
+			return
+
+		else:
+			super().activate()
+
 
 	def get_configuration_template(self):
-		return {
+		""" configuration entries """
+		config = {
 			"NAGIOS_URL": "",
 			"NAGIOS_USERNAME": "",
 			"NAGIOS_PASSWORD": "",
 		}
+		return config
 
 	def check_configuration(self, config):
 		if type(config) != dict:
@@ -60,10 +72,7 @@ class NagiosBot(errbot.BotPlugin):
 			config["NAGIOS_USERNAME"],
 			config["NAGIOS_PASSWORD"])
 
-		super(NagiosBot, self).configure(config)
-
-	def activate(self):
-		super(NagiosBot, self).activate()
+		super(Nagios, self).configure(config)
 
 	def ack_host_or_service(self, host, service, comment, who):
 		if service:
@@ -72,8 +81,8 @@ class NagiosBot(errbot.BotPlugin):
 		else:
 			self.nagios.ack_host_problem(host, comment, author=who)
 
-	@errbot.botcmd
-	def nagios_ack(self, msg, args):
+	@botcmd
+	def ack(self, msg, args):
 		args = args.strip()
 
 		if args.startswith(("'", '"')):
@@ -93,16 +102,18 @@ class NagiosBot(errbot.BotPlugin):
 		self.ack_host_or_service(
 			host, service, "%s (%s)" % (
 				" ".join(args[1:]),
-				errbot.utils.get_sender_username(msg),
+				msg.frm,
 			),
-			errbot.utils.get_sender_username(msg))
+			msg.frm)
 
 		if service:
 			return "Acked %s on %s." % (service, host)
 		return "Acked %s." % host
 
-	@errbot.botcmd
-	def nagios_recheck(self, msg, args):
+	@botcmd
+	def recheck(self, msg, args):
 		host, service = args.split(":", 1)
 		self.nagios.schedule_svc_check(host, service)
-		return "Submitted recheck for %s on %s." % (service, host)
+		return = "Submitted recheck for %s on %s." % (service, host)
+
+
