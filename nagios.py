@@ -34,19 +34,6 @@ from errbot import BotPlugin, botcmd
 
 class Nagios(BotPlugin):
 
-	def activate(self):
-
-		if not self.config:
-			# Don't allow activation until we are configured
-			message = 'Nagios is not configured, please do so.'
-			self.log.info(message)
-			self.warn_admins(message)
-			return
-
-		else:
-			super().activate()
-
-
 	def get_configuration_template(self):
 		""" configuration entries """
 		config = {
