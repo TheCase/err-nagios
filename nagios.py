@@ -60,6 +60,9 @@ class Nagios(BotPlugin):
 			config["NAGIOS_PASSWORD"])
 
 		super(Nagios, self).configure(config)
+		
+	def activate(self):
+		super(NagiosBot, self).activate()
 
 	def ack_host_or_service(self, host, service, comment, who):
 		if service:
