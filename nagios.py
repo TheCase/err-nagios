@@ -92,9 +92,9 @@ class Nagios(BotPlugin):
 		self.ack_host_or_service(
 			host, service, "%s (%s)" % (
 				" ".join(args[1:]),
-				msg.frm,
+				errbot.utils.get_sender_username(msg),
 			),
-			msg.frm)
+			errbot.utils.get_sender_username(msg))
 
 		if service:
 			return "Acked %s on %s." % (service, host)
