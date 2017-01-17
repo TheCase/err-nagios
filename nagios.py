@@ -1,3 +1,4 @@
+
 #!/usr/bin/python -tt
 
 # Copyright (c) 2014, John Morrissey <jwm@horde.net>
@@ -25,23 +26,24 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import re
+import re
 
 import errbot
 import nagcgi
-from errbot import BotPlugin, botcmd
-#import rt
+import rt
 
-class Nagios(BotPlugin):
+class NagiosBot(errbot.BotPlugin):
+	min_err_version = "2.0.0"
+	max_err_version = "2.0.0"
+
+	nagios = None
 
 	def get_configuration_template(self):
-		""" configuration entries """
-		config = {
+		return {
 			"NAGIOS_URL": "",
 			"NAGIOS_USERNAME": "",
 			"NAGIOS_PASSWORD": "",
 		}
-		return config
 
 	def check_configuration(self, config):
 		if type(config) != dict:
@@ -59,8 +61,8 @@ class Nagios(BotPlugin):
 			config["NAGIOS_USERNAME"],
 			config["NAGIOS_PASSWORD"])
 
-		super(Nagios, self).configure(config)
-		
+		super(NagiosBot, self).configure(config)
+
 	def activate(self):
 		super(NagiosBot, self).activate()
 
@@ -71,8 +73,8 @@ class Nagios(BotPlugin):
 		else:
 			self.nagios.ack_host_problem(host, comment, author=who)
 
-	@botcmd
-	def ack(self, msg, args):
+	@errbot.botcmd
+	def nagios_ack(self, msg, args):
 		args = args.strip()
 
 		if args.startswith(("'", '"')):
@@ -100,10 +102,9 @@ class Nagios(BotPlugin):
 			return "Acked %s on %s." % (service, host)
 		return "Acked %s." % host
 
-	@botcmd
-	def recheck(self, msg, args):
+	@errbot.botcmd
+	def nagios_recheck(self, msg, args):
 		host, service = args.split(":", 1)
 		self.nagios.schedule_svc_check(host, service)
-		return = "Submitted recheck for %s on %s." % (service, host)
-
+		return "Submitted recheck for %s on %s." % (service, host)
 
