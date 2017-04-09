@@ -1,1 +1,1 @@
-git+https://github.com/aliegha/NagiosCGI.git
+git+git://github.com/TheCase/nagcgi.git@master#egg=nagcgi
