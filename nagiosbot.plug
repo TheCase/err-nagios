@@ -6,4 +6,4 @@ Module = nagiosbot
 Description = Interface to Nagios
 
 [Python]
-Version = 2
+Version = 3
